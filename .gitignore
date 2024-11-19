@@ -1,19 +1,63 @@
-# Python virtual environment
-venv_oak/
-*.pyc
-__pycache__/
-
+# Python virtual environments
 venv/
+venv_oak/
+env/
+.env/
+.venv/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
 
 # macOS system files
 .DS_Store
+.AppleDouble
+.LSOverride
 
-# VSCode workspace files
+# VSCode settings
+.vscode/
 *.code-workspace
 
-# Blob and other binary files
-*.blob
+# PyCharm
+.idea/
+
+# Jupyter Notebook
+.ipynb_checkpoints
 
 # Logs and databases
 *.log
 *.sqlite3
+
+# Specific project binary files
+*.blob
+
+# Sensitive or local configuration files
+.env
+*.env
+
+# Compiled source
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Temporary files
+*.tmp
+*.swp
+.tmp/
+
+# Specific to this project
+api_check.BAK
