@@ -90,12 +90,19 @@ class OAK_GUI(QMainWindow):
 
     def initUI(self):
         self.setWindowTitle("Jelly Bean Sorter" + (" (Testing Mode)" if getattr(arduino, 'is_mock', False) else ""))
-        self.setMinimumSize(1024, 768)
+        self.setMinimumSize(1024, 700)
+        self.setMaximumHeight(720)
 
         main_layout = QVBoxLayout()
+        main_layout.setSpacing(5)
+        main_layout.setContentsMargins(5, 5, 5, 5)
+
         top_layout = QHBoxLayout()
-        button_layout = QVBoxLayout()
         table_layout = QVBoxLayout()
+
+        button_layout = QVBoxLayout()
+        button_layout.setSpacing(3)
+        table_layout.QVBoxLayout()
 
         # Video frame with reduced size
         self.video_frame = QLabel()
@@ -104,7 +111,7 @@ class OAK_GUI(QMainWindow):
         top_layout.addWidget(self.video_frame)
 
         # Create buttons with smaller size
-        button_size = (100, 40)
+        button_size = (100, 35)
 
         # Main control buttons
         self.start_button = QPushButton("Start Video", self)
@@ -176,7 +183,8 @@ class OAK_GUI(QMainWindow):
         # Configure message box
         self.message_box = QTextEdit()
         self.message_box.setReadOnly(True)
-        self.message_box.setMaximumHeight(150)
+        self.message_box.setMaximumHeight(100)
+        self.message_box.setMaximumHeight(100)
 
         # Combine layouts
         top_layout.addLayout(button_layout)
