@@ -1,0 +1,19 @@
+# Python virtual environment
+venv_oak/
+*.pyc
+__pycache__/
+
+venv/
+
+# macOS system files
+.DS_Store
+
+# VSCode workspace files
+*.code-workspace
+
+# Blob and other binary files
+*.blob
+
+# Logs and databases
+*.log
+*.sqlite3

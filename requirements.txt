@@ -1,0 +1,23 @@
+# Core dependencies
+PyQt5>=5.15.0
+opencv-python>=4.5.0
+pyserial>=3.5
+roboflowoak>=0.2.4
+
+# Optional but recommended
+numpy>=1.19.0  # Usually required by opencv
+
+
+
+
+'cpp': LanguageConfig(
+  commentSymbol: '//',
+  indentSpaces: 4,
+  patternMap: {
+    'string': '(?:".*?"|\'.*?\')',
+    'comment': '#.*',  // <-- This treats # as a comment
+    'class': 'class\\s+(\\w+)',
+    'preprocessor': '#\\w+',  // <-- Already has preprocessor pattern
+  },
+  // ...rest of config
+),
