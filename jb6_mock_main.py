@@ -61,7 +61,7 @@ def pickup_sequence(x, y):
     ]
 
 class OAK_GUI(QMainWindow):
-    def __init__(self, video_scale=1):
+    def __init__(self, video_scale=0.6):
         super().__init__()
 
         print("Initializing RoboflowOak...")
@@ -90,56 +90,95 @@ class OAK_GUI(QMainWindow):
 
     def initUI(self):
         self.setWindowTitle("Jelly Bean Sorter" + (" (Testing Mode)" if getattr(arduino, 'is_mock', False) else ""))
+        self.setMinimumSize(1024, 768)
 
         main_layout = QVBoxLayout()
         top_layout = QHBoxLayout()
         button_layout = QVBoxLayout()
         table_layout = QVBoxLayout()
 
+        # Video frame with reduced size
         self.video_frame = QLabel()
-        self.video_frame.setFixedSize(640*self.video_scale, 640*self.video_scale)
+        self.video_frame.setFixedSize(int(640*self.video_scale), int(640*self.video_scale))
         self.video_frame.setFrameStyle(QFrame.Sunken | QFrame.Panel)
         top_layout.addWidget(self.video_frame)
 
+        # Create buttons with smaller size
+        button_size = (100, 40)
+
+        # Main control buttons
         self.start_button = QPushButton("Start Video", self)
-        self.start_button.setFixedSize(120, 60)
+        self.start_button.setFixedSize(*button_size)
         self.start_button.clicked.connect(self.start_video)
         button_layout.addWidget(self.start_button)
 
         self.stop_button = QPushButton("Stop Video", self)
-        self.stop_button.setFixedSize(120, 60)
+        self.stop_button.setFixedSize(*button_size)
         self.stop_button.clicked.connect(self.stop_video)
         button_layout.addWidget(self.stop_button)
 
         self.snapshot_button = QPushButton("Snapshot", self)
-        self.snapshot_button.setFixedSize(120, 60)
+        self.snapshot_button.setFixedSize(*button_size)
         self.snapshot_button.clicked.connect(self.snapshot)
         button_layout.addWidget(self.snapshot_button)
 
         self.action_button = QPushButton("Pick Flavor", self)
-        self.action_button.setFixedSize(120, 60)
+        self.action_button.setFixedSize(*button_size)
         self.action_button.clicked.connect(self.pick_flavor)
         button_layout.addWidget(self.action_button)
 
         self.auto_button = QPushButton("Auto Pick", self)
-        self.auto_button.setFixedSize(120, 60)
+        self.auto_button.setFixedSize(*button_size)
         self.auto_button.clicked.connect(self.auto_pick)
         button_layout.addWidget(self.auto_button)
+
+        # Add Config section label
+        config_label = QLabel("Config")
+        config_label.setStyleSheet("font-weight: bold; margin-top: 10px;")
+        button_layout.addWidget(config_label)
+
+        # Add configuration buttons
+        self.home_button = QPushButton("Home", self)
+        self.home_button.setFixedSize(*button_size)
+        self.home_button.clicked.connect(self.home_machine)
+        button_layout.addWidget(self.home_button)
+
+        self.zero_button = QPushButton("Zero", self)
+        self.zero_button.setFixedSize(*button_size)
+        self.zero_button.clicked.connect(self.zero_machine)
+        button_layout.addWidget(self.zero_button)
+
+        self.reset_button = QPushButton("Reset", self)
+        self.reset_button.setFixedSize(*button_size)
+        self.reset_button.clicked.connect(self.reset_machine)
+        button_layout.addWidget(self.reset_button)
 
         # Add Arduino status indicator
         self.arduino_status = QLabel("Arduino: " + ("Mock (Testing)" if getattr(arduino, 'is_mock', False) else "Connected"))
         self.arduino_status.setStyleSheet("color: " + ("orange" if getattr(arduino, 'is_mock', False) else "green"))
         button_layout.addWidget(self.arduino_status)
 
+        # Configure predictions table
         self.predictions_table = QTableWidget()
         self.predictions_table.setColumnCount(3)
         self.predictions_table.setHorizontalHeaderLabels(['Flavor', 'Avg Confidence', 'Coordinates'])
-        self.predictions_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        
+        # Set minimum width for the table and its columns
+        self.predictions_table.setMinimumWidth(400)
+        header = self.predictions_table.horizontalHeader()
+        header.setSectionResizeMode(0, QHeaderView.Interactive)
+        header.setSectionResizeMode(1, QHeaderView.Interactive)
+        header.setSectionResizeMode(2, QHeaderView.Interactive)
+        header.setMinimumSectionSize(120)
+        
         table_layout.addWidget(self.predictions_table)
 
+        # Configure message box
         self.message_box = QTextEdit()
         self.message_box.setReadOnly(True)
+        self.message_box.setMaximumHeight(150)
 
+        # Combine layouts
         top_layout.addLayout(button_layout)
         top_layout.addLayout(table_layout)
         main_layout.addLayout(top_layout)
@@ -224,6 +263,18 @@ class OAK_GUI(QMainWindow):
 
         send_gcode("G01 x0 y0 f300")
         return True
+
+    def home_machine(self):
+        self.display_message("Homing machine...")
+        send_gcode("$h")
+        
+    def zero_machine(self):
+        self.display_message("Setting machine zero point...")
+        send_gcode("G28")
+        
+    def reset_machine(self):
+        self.display_message("Resetting machine...")
+        send_gcode("$x")
   
     def update_frame(self):
         if not self.video_running:

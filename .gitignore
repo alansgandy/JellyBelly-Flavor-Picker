@@ -41,6 +41,8 @@ build/
 .env
 *.env
 
+api_check.BAK
+
 # Compiled source
 *.com
 *.class
